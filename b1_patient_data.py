@@ -3,6 +3,7 @@ import customtkinter as ctk
 import tkinter as tk
 import sqlite3
 from pathlib import Path
+from PIL import Image, ImageTk
 from datetime import datetime  
 
 ASSETS_PATH = Path(__file__).parent / "assets" / "frame-b1"
@@ -32,67 +33,74 @@ class PatientDataScreen(tk.Frame):
                           (id INTEGER PRIMARY KEY, nama TEXT, tanggal_pemeriksaan TEXT)''')
 
         # Frame untuk menempatkan elemen
-        container = tk.Frame(self, bg="#FFFFFF")
-        container.place(relx=0.5, rely=0.5, anchor="center")
+        self.container = tk.Frame(self, bg="#FFFFFF")
+        self.container.place(relx=0, rely=0, relwidth=1, relheight=1)
+
+        self.update_idletasks()
+        screen_width = self.winfo_screenwidth()
+        screen_height = self.winfo_screenheight()
 
         # Menambahkan logo (lebih kecil dari yang ada di welcome screen)
         logo_path = relative_to_assets("b1-image.png")
         if logo_path.exists():
-            logo_image = tk.PhotoImage(file=logo_path)
-            logo_label = tk.Label(container, image=logo_image, bg="#FFFFFF")
-            logo_label.place(x=859, y=92)
+            logo_image = Image.open(logo_path)
+            responsive_logo_size = logo_image.resize((int(screen_width/9.6), int(screen_height/5.4)), Image.LANCZOS)
+            logo = ImageTk.PhotoImage(responsive_logo_size)
+            self.logo_label = tk.Label(self.container, image=logo, bg="#FFFFFF")
+            self.logo_label.image = logo
+            self.logo_label.place(relx=0.5, rely=0.1, anchor="n")
         else:
             print(f"Error: File tidak ditemukan - {logo_path}")
 
         # Label untuk entry nama pasien
-        self.name_entry_label = ctk.CTkLabel(container,
-                    text="Nama Pasien",
-                    font=("Poppins Bold", 30),
-                    fg_color="#FFFFFF",
-                    text_color="#000000")
-        self.name_entry_label.place(x=115, y=294)
+        self.font_size = int(screen_height / 48)
+
+        self.name_entry_label = ctk.CTkLabel(
+            self.container,
+            text="Nama Pasien",
+            font=("Poppins Bold", self.font_size),
+            text_color="#000000",
+            fg_color="transparent")
+        self.name_entry_label.place(relx=0.1, rely=0.4, anchor="nw")
 
         # Entry nama pasien
-        self.name_entry = ctk.CTkEntry(container,
-                                fg_color="#DDDDDD",
-                                text_color="#000000",
-                                font=("Poppins Medium", 14),
-                                corner_radius=15,
-                                width=1750,
-                                height=100)
-        self.name_entry.place(x=0, y=0)
+        self.name_entry = ctk.CTkEntry(
+            self.container,
+            fg_color="#DDDDDD",
+            text_color="#000000",
+            font=("Poppins Medium", self.font_size),
+            corner_radius=15)
+        self.name_entry.place(relx=0.1, rely=0.45, anchor="nw", relwidth=0.75)
 
         # Label untuk entry tanggal pemeriksaan
-        self.date_entry_label = ctk.CTkLabel(container,
-                     text="Tanggal Pemeriksaan",
-                     font=("Poppins Bold", 30),
-                     fg_color="#FFFFFF",
-                     text_color="#000000")
-        self.date_entry_label.place(x=115, y=470)
+        self.date_entry_label = ctk.CTkLabel(
+            self.container,
+            text="Tanggal Pemeriksaan",
+            font=("Poppins Bold", self.font_size),
+            fg_color="transparent",
+            text_color="#000000")
+        self.date_entry_label.place(relx=0.1, rely=0.6, anchor="nw")
 
         # Entry tanggal pemeriksaan
-        self.date_entry = ctk.CTkEntry(container,
-                                fg_color="#DDDDDD",
-                                text_color="#000716",
-                                font=("Poppins Medium", 14),
-                                corner_radius=15)
-        self.date_entry.place(x=86, y=535)
-
-        # Container untuk tombol "Selanjutnya"
-        button_container = tk.Canvas(container, bg="#FFFFFF")
-        button_container.place(relx=0.5, rely=0.8, anchor="center")
+        self.date_entry = ctk.CTkEntry(
+            self.container,
+            fg_color="#DDDDDD",
+            text_color="#000000",
+            font=("Poppins Medium", self.font_size),
+            corner_radius=15)
+        self.date_entry.place(relx=0.1, rely=0.65, anchor="nw", relwidth=0.75)
 
         # Tombol simpan dan navigasi ke LiveCameraScreen
         save_button = ctk.CTkButton(
-            button_container,
+            self.container,
             text="Selanjutnya",
-            font=("Poppins Medium", 20),
+            font=("Poppins Medium", self.font_size),
             fg_color="#A8DEE6",
             text_color="#16228E",
             corner_radius=15,
             command=self.save_and_navigate  # Memanggil fungsi save_and_navigate sebelum pindah halaman
         )
-        save_button.pack(side="left", padx=(50, 0))
+        save_button.place(relx=0.8, rely=0.8, anchor="nw")
 
     def save_and_navigate(self):
         """

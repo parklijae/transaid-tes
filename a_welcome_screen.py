@@ -74,7 +74,9 @@ class TransAIDScreen(tk.Frame):
             self.logo_label = tk.Label(self.container, image=logo, bg="#FFFFFF")
             self.logo_label.image = logo # saving the reference (address of the logo asset) bcs if not, Tkinter will detele it thinking it's no longer in use
             self.logo_label.place(relx=0.5, rely=0.1, anchor="n")  # explained above in the docstring
-
+        else:
+            print(f"Error: File tidak ditemukan - {logo_path}")
+            
         # writing the title "TransAID" in screen (btw, bg used in tkinter, fg_color usesd in customtkinter; both are used for background color)
         self.font_size = int(screen_height / 18)
         self.title_label = ctk.CTkLabel(
