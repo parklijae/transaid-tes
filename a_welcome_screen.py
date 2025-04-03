@@ -92,7 +92,7 @@ class TransAIDScreen(tk.Frame):
         self.daftar_button = ctk.CTkButton(
             self.container,
             text="Daftar",
-            font=("Poppins Semi Bold", self.button_font_size),
+            font=("Poppins Medium", self.button_font_size),
             fg_color="#A8DEE6",
             text_color="#16228E",
             corner_radius=15,
